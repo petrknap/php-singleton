@@ -4,6 +4,9 @@ Singleton pattern for PHP by [Petr Knap].
 
 * [What is Singleton pattern?](#what-is-singleton-pattern)
 * [Why use Singletons?](#why-use-singletons)
+* [Usage of php-singleton](#usage-of-php-singleton)
+    * [Singleton declaration](#singleton-declaration)
+    * [Singleton usage](#singleton-usage)
 * [How to install](#how-to-install)
 
 
@@ -67,6 +70,49 @@ class MyFileAppender implements \PetrKnap\Php\Singleton\SingletonInterface
 
 $first = MyFileAppender::getInstance();  // OK
 $second = MyFileAppender::getInstance(); // OK
+```
+
+## Usage of php-singleton
+
+### Singleton declaration
+```php
+class MySingleton implements \PetrKnap\Php\Singleton\SingletonInterface
+{
+    use \PetrKnap\Php\Singleton\SingletonTrait;
+    
+    private $name;
+    
+    private function __constructor() // WARNING: Don't use public constructor - it's singleton!
+    {
+        // If you need some construct logic place it here, otherwise don't declare this method
+    }
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function setName($name)
+    {
+        $this->name = name;
+    }
+}
+```
+
+### Singleton usage
+```php
+$a = MySingleton::getInstance();
+$b = MySingleton::getInstance();
+
+if ($a == $b) {
+    echo "Both variables contain the same instance.";
+}
+
+$a->setName("Singleton A");
+
+if ($b->getName() == "Singleton A") {
+    echo "Both variables contain the same instance.";
+}
 ```
 
 
