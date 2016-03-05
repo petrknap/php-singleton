@@ -22,7 +22,7 @@ trait SingletonTrait
     /**
      * Returns instance, if instance does not exist then creates new one and returns it
      *
-     * @return self
+     * @return $this
      */
     public static function getInstance()
     {
