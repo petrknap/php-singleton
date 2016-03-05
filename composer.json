@@ -1,6 +1,6 @@
 {
   "name": "petrknap/php-singleton",
-  "description": "PHP singleton by Petr Knap",
+  "description": "Singleton pattern for PHP",
   "license": "MIT",
   "authors": [
     {
