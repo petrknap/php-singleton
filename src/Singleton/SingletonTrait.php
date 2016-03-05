@@ -9,7 +9,7 @@ namespace PetrKnap\Php\Singleton;
  * @since    2015-04-18
  * @category Patterns
  * @package  PetrKnap\Php\Singleton
- * @version  0.3
+ * @version  0.4
  * @license  https://github.com/petrknap/php-singleton/blob/master/LICENSE MIT
  */
 trait SingletonTrait
@@ -31,5 +31,14 @@ trait SingletonTrait
             self::$instances[$self] = new $self;
         }
         return self::$instances[$self];
+    }
+
+    /**
+     * @return bool true if has instance, otherwise false
+     */
+    protected static function hasInstance()
+    {
+        $self = get_called_class();
+        return isset(self::$instances[$self]);
     }
 }
