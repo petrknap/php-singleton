@@ -2,6 +2,7 @@
 
 namespace PetrKnap\Php\Singleton\Test;
 
+use PetrKnap\Php\Singleton\SingletonInterface;
 use PetrKnap\Php\Singleton\Test\SingletonTraitTest\ClassThatExtendsSingleton;
 use PetrKnap\Php\Singleton\Test\SingletonTraitTest\ClassThatUsesSingletonTrait;
 
@@ -26,18 +27,29 @@ class SingletonTraitTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testReturnsOnlyOneInstance()
+    /**
+     * @dataProvider dataReturnsOnlyOneInstance
+     * @param string $singletonClassName
+     * @param SingletonInterface $expectedSingletonInstance
+     */
+    public function testReturnsOnlyOneInstance($singletonClassName, SingletonInterface $expectedSingletonInstance)
     {
-        $data = __METHOD__;
+        $instance = call_user_func("{$singletonClassName}::getInstance");
 
-        /** @var ClassThatUsesSingletonTrait $a */
-        $a = ClassThatUsesSingletonTrait::getInstance();
+        $this->assertSame($expectedSingletonInstance, $instance);
 
-        $a->setData($data);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $expectedSingletonInstance->setData(rand(0, 1023));
 
-        /** @var ClassThatUsesSingletonTrait $b */
-        $b = ClassThatUsesSingletonTrait::getInstance();
+        /** @noinspection PhpUndefinedMethodInspection */
+        $this->assertEquals($expectedSingletonInstance->getData(), $instance->getData());
+    }
 
-        $this->assertEquals($data, $b->getData());
+    public function dataReturnsOnlyOneInstance()
+    {
+        return [
+            [ClassThatUsesSingletonTrait::getClassName(), ClassThatUsesSingletonTrait::getInstance()],
+            [ClassThatExtendsSingleton::getClassName(), ClassThatExtendsSingleton::getInstance()]
+        ];
     }
 }
