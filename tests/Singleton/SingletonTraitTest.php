@@ -1,57 +1,72 @@
 <?php
 
-namespace PetrKnap\Php\Singleton;
+namespace PetrKnap\Php\Singleton\Test;
+
+use PetrKnap\Php\Singleton\SingletonInterface;
+use PetrKnap\Php\Singleton\Test\SingletonTraitTest\ClassThatExtendsSingleton;
+use PetrKnap\Php\Singleton\Test\SingletonTraitTest\ClassThatUsesSingletonTrait;
 
 class SingletonTraitTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCanNotInstantiateExternally()
+    /**
+     * @dataProvider dataReturnsValidInstance
+     * @param string $singletonClassName
+     */
+    public function testReturnsValidInstance($singletonClassName)
     {
-        $reflection = new \ReflectionClass(SingletonMock::getClassName());
+        $instance = call_user_func("{$singletonClassName}::getInstance");
 
-        $this->assertFalse($reflection->getConstructor()->isPublic());
+        $this->assertEquals($singletonClassName, get_class($instance));
     }
 
-    public function testReturnsValidInstance()
+    public function dataReturnsValidInstance()
     {
-        $instance = SingletonMock::getInstance();
-
-        $this->assertInstanceOf(SingletonMock::getClassName(), $instance);
+        return [
+            [ClassThatUsesSingletonTrait::getClassName()],
+            [ClassThatExtendsSingleton::getClassName()]
+        ];
     }
 
-    public function testReturnsOnlyOneInstance()
+    /**
+     * @dataProvider dataReturnsOnlyOneInstance
+     * @param string $singletonClassName
+     * @param SingletonInterface $expectedSingletonInstance
+     */
+    public function testReturnsOnlyOneInstance($singletonClassName, SingletonInterface $expectedSingletonInstance)
     {
-        $data = __METHOD__;
+        $instance = call_user_func("{$singletonClassName}::getInstance");
 
-        /** @var SingletonMock $a */
-        $a = SingletonMock::getInstance();
+        $this->assertSame($expectedSingletonInstance, $instance);
 
-        $a->setData($data);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $expectedSingletonInstance->setData(rand(0, 1023));
 
-        /** @var SingletonMock $b */
-        $b = SingletonMock::getInstance();
-
-        $this->assertEquals($data, $b->getData());
-    }
-}
-
-class SingletonMock implements SingletonInterface
-{
-    use SingletonTrait;
-
-    private $data;
-
-    public function getData()
-    {
-        return $this->data;
+        /** @noinspection PhpUndefinedMethodInspection */
+        $this->assertEquals($expectedSingletonInstance->getData(), $instance->getData());
     }
 
-    public function setData($data)
+    public function dataReturnsOnlyOneInstance()
     {
-        $this->data = $data;
+        return [
+            [ClassThatUsesSingletonTrait::getClassName(), ClassThatUsesSingletonTrait::getInstance()],
+            [ClassThatExtendsSingleton::getClassName(), ClassThatExtendsSingleton::getInstance()]
+        ];
     }
 
-    public static function getClassName()
+    public function testParentIsIsolatedFromChild()
     {
-        return __CLASS__;
+        $parent = ClassThatUsesSingletonTrait::getInstance();
+        $child = ClassThatExtendsSingleton::getInstance();
+
+        $this->assertNotSame($parent, $child);
+
+        $parent->setData("parent");
+        $this->assertNotEquals("parent", $child->getData());
+
+        $child->setData("child");
+        $this->assertNotEquals("child", $parent->getData());
+
+        $this->assertEquals("parent", $parent->getData());
+        $this->assertEquals("child", $child->getData());
     }
 }
