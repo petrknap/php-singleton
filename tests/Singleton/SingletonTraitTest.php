@@ -1,57 +1,30 @@
 <?php
 
-namespace PetrKnap\Php\Singleton;
+namespace PetrKnap\Php\Singleton\Test;
+
+use PetrKnap\Php\Singleton\Test\SingletonTraitTest\ClassThatUsesSingletonTrait;
 
 class SingletonTraitTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCanNotInstantiateExternally()
-    {
-        $reflection = new \ReflectionClass(SingletonMock::getClassName());
-
-        $this->assertFalse($reflection->getConstructor()->isPublic());
-    }
-
     public function testReturnsValidInstance()
     {
-        $instance = SingletonMock::getInstance();
+        $instance = ClassThatUsesSingletonTrait::getInstance();
 
-        $this->assertInstanceOf(SingletonMock::getClassName(), $instance);
+        $this->assertInstanceOf(ClassThatUsesSingletonTrait::getClassName(), $instance);
     }
 
     public function testReturnsOnlyOneInstance()
     {
         $data = __METHOD__;
 
-        /** @var SingletonMock $a */
-        $a = SingletonMock::getInstance();
+        /** @var ClassThatUsesSingletonTrait $a */
+        $a = ClassThatUsesSingletonTrait::getInstance();
 
         $a->setData($data);
 
-        /** @var SingletonMock $b */
-        $b = SingletonMock::getInstance();
+        /** @var ClassThatUsesSingletonTrait $b */
+        $b = ClassThatUsesSingletonTrait::getInstance();
 
         $this->assertEquals($data, $b->getData());
-    }
-}
-
-class SingletonMock implements SingletonInterface
-{
-    use SingletonTrait;
-
-    private $data;
-
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    public static function getClassName()
-    {
-        return __CLASS__;
     }
 }
