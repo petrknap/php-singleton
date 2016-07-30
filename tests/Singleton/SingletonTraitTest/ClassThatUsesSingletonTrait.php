@@ -23,6 +23,6 @@ class ClassThatUsesSingletonTrait implements SingletonInterface
 
     public static function getClassName()
     {
-        return __CLASS__;
+        return get_called_class();
     }
 }
