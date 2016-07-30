@@ -52,4 +52,21 @@ class SingletonTraitTest extends \PHPUnit_Framework_TestCase
             [ClassThatExtendsSingleton::getClassName(), ClassThatExtendsSingleton::getInstance()]
         ];
     }
+
+    public function testParentIsIsolatedFromChild()
+    {
+        $parent = ClassThatUsesSingletonTrait::getInstance();
+        $child = ClassThatExtendsSingleton::getInstance();
+
+        $this->assertNotSame($parent, $child);
+
+        $parent->setData("parent");
+        $this->assertNotEquals("parent", $child->getData());
+
+        $child->setData("child");
+        $this->assertNotEquals("child", $parent->getData());
+
+        $this->assertEquals("parent", $parent->getData());
+        $this->assertEquals("child", $child->getData());
+    }
 }
