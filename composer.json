@@ -5,7 +5,7 @@
     },
     "WARNING": "This file is updated automatically. All keys will be overwritten, except of 'description', 'require' and 'conflict'.",
     "name": "petrknap/php-singleton",
-    "homepage": "https://petrknap.github.io/php/singleton.html",
+    "homepage": "https://petrknap.github.io/docs/php-singleton.html",
     "license": "MIT",
     "authors": [
         {
