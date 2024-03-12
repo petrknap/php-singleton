@@ -31,11 +31,11 @@ class UnsafeFileAppender
 You cannot create two instances at the same time with this code...
 
 ```php
-$first = new MyFileAppender();  // OK
-$second = new MyFileAppender(); // Deadlock
+$first = new UnsafeFileAppender();  // OK
+$second = new UnsafeFileAppender(); // Deadlock
 ```
 
-...so simply extend the class...
+...so simply convert it into singleton...
 
 ```php
 use PetrKnap\Singleton\SingletonInterface;
