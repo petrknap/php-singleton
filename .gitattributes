@@ -1,1 +1,6 @@
+tests export-ignore
+Dockerfile export-ignore
+bin export-ignore
 *.bat text eol=crlf
+.github export-ignore
+.molireali export-ignore

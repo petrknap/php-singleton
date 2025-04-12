@@ -1,5 +1,4 @@
 {
-  "WARNING": "This file is updated automatically. All keys will be overwritten, except of 'conflict', 'keywords', 'require', 'require-dev', 'scripts' and 'suggest'.",
   "autoload": {
     "psr-4": {
       "PetrKnap\\Singleton\\": "src"
@@ -30,32 +29,33 @@
   "license": "LGPL-3.0-or-later",
   "name": "petrknap/singleton",
   "require": {
-    "php": ">=8.1",
-    "petrknap/shorts": "^2.1"
+    "php": ">=8.1"
   },
   "require-dev": {
     "nunomaduro/phpinsights": "^2.11",
-    "phpstan/phpstan": "^1.10",
+    "petrknap/shorts": "^3.0",
+    "phpstan/phpstan": "^1.12",
     "phpunit/phpunit": "^10.5",
     "squizlabs/php_codesniffer": "^3.7"
   },
   "scripts": {
     "test": "phpunit --colors=always --testdox tests",
     "check-requirements": [
+      "composer update \"petrknap/*\"",
       "composer outdated \"petrknap/*\" --major-only --strict --ansi --no-interaction"
     ],
     "check-implementation": [
       "phpcs --colors --standard=PSR12 --exclude=Generic.Files.LineLength src tests",
       "phpstan analyse --level max src --ansi --no-interaction",
       "phpstan analyse --level 5 tests --ansi --no-interaction",
-      "phpinsights analyse src --ansi --no-interaction"
+      "phpinsights analyse src tests --ansi --no-interaction --format=github-action | sed -e \"s#::error file=$PWD/#::notice file=#g\""
     ],
     "test-implementation": [
       "@test"
     ],
     "ci-script": [
-      "@check-requirements",
       "@check-implementation",
+      "@check-requirements",
       "@test-implementation"
     ]
   }
